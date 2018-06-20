@@ -207,7 +207,7 @@ app.use(express.static('public'));
 app.post('/login', passport.authenticate('local', {
     failureRedirect: '/'
   }), function(req, res) {
-    res.redirect('/');
+    res.redirect(settings.app.nginxlocation);
   }
 );
 
