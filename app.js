@@ -38,17 +38,17 @@ var createUser = function(req, res) {
     // if(err)
     if(row) {
       req.flash('errorMessage', " there is already a user with that name");
-      res.redirect(settings.app.nginxlocation + '/admin/users');
+      res.redirect(settings.app.nginxlocation + 'admin/users');
     } else {
       bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
         db.run('INSERT INTO users ( user, password, permissions ) VALUES( ?, ?, ? )', user, hash, permissions, function(err) {
           // if(err)
           if(this.lastID) {
             req.flash('successMessage', " user created");
-            res.redirect(settings.app.nginxlocation + '/admin/users');
+            res.redirect(settings.app.nginxlocation + 'admin/users');
           } else {
             req.flash('errorMessage', " something went wrong");
-            res.redirect(settings.app.nginxlocation + '/admin/users');
+            res.redirect(settings.app.nginxlocation + 'admin/users');
           }
         });
       });
@@ -59,14 +59,14 @@ var createUser = function(req, res) {
 var deleteUser = function(req, res) {
   if(req.user.id == req.body.id) {
     req.flash('errorMessage', " you can't delete yourself");
-    res.redirect(settings.app.nginxlocation + '/admin/users');
+    res.redirect(settings.app.nginxlocation + 'admin/users');
   } else {
     db.run('DELETE FROM users WHERE id = ?', req.body.id, function(err) {
       if(err) {
         //...
       } else {
         req.flash('successMessage', " user deleted");
-        res.redirect(settings.app.nginxlocation + '/admin/users');
+        res.redirect(settings.app.nginxlocation + 'admin/users');
       }
     });
   }
@@ -118,15 +118,15 @@ var editUser = flow.define(
           //...
           console.log(err);
           req.flash('errorMessage', " something went wrong");
-          res.redirect(settings.app.nginxlocation + '/admin/users');
+          res.redirect(settings.app.nginxlocation + 'admin/users');
         } else {
           req.flash('successMessage', " user updated");
-          res.redirect(settings.app.nginxlocation + '/admin/users');
+          res.redirect(settings.app.nginxlocation + 'admin/users');
         }
       });
     } else {
       req.flash('errorMessage', " something went wrong");
-      res.redirect(settings.app.nginxlocation + '/admin/users');
+      res.redirect(settings.app.nginxlocation + 'admin/users');
     }
   }
 );
