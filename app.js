@@ -205,7 +205,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
 app.post('/login', passport.authenticate('local', {
-    failureRedirect: '/'
+    failureRedirect: settings.app.nginxlocation
   }), function(req, res) {
     res.redirect(settings.app.nginxlocation);
   }
@@ -290,7 +290,7 @@ app.post('/admin/user', function(req, res) {
         createUser(req, res);
       break;
     }
-  } else { res.redirect('/admin/users'); }
+  } else { res.redirect(settings.app.nginxlocation + 'admin/users'); }
 });
 
 app.listen(settings.app.port, function() {
