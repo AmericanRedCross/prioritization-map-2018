@@ -2,6 +2,7 @@ var settings = require('./settings.js');
 var fs = require('fs');
 var flow = require('flow');
 var path = require('path');
+var parse = require('csv-parse');
 var crypto = require('crypto');
 var sqlite3 = require('sqlite3');
 var passport = require('passport');
@@ -10,7 +11,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // initialize database
-var file = path.join(settings.app.db);
+var file = path.resolve(__dirname,settings.app.db);
 fs.existsSync(file);
 var db = new sqlite3.Database(file);
 
@@ -212,14 +213,52 @@ app.post('/login', passport.authenticate('local', {
 
 app.post('/logout', function(req, res) {
 	req.session.destroy(function(err) {
-		res.redirect('/');
+		res.redirect(settings.app.nginxlocation);
 	})
 });
 
 app.get('/', function(req, res) {
 		res.render('home',{
-			user:req.user
+			user:req.user,
+      opts: settings.app
 		});
+});
+
+app.get('/map', function(req, res) {
+  if (req.user) {
+    res.render('map',{
+      user:req.user,
+      opts: settings.app
+    });
+  } else {
+    res.redirect(settings.app.nginxlocation);
+  }
+});
+
+app.get('/map/country-mapping', function(req, res) {
+  if(req.user) {
+    var dataPath = path.resolve(__dirname,"data","country-mapping.csv");
+    fs.readFile(dataPath, function(err,fileData){
+      parse(fileData, {columns: function(first){return first} }, function(err,data) {
+        res.json(data);
+      });
+    })
+  } else {
+    res.redirect(settings.app.nginxlocation);
+  }
+});
+
+app.get('/map/competencies', function(req, res) {
+  if(req.user) {
+    var dataPath = path.resolve(__dirname,"data","competencies.csv");
+    fs.readFile(dataPath, function(err,fileData){
+      parse(fileData, {columns: function(first){return first} }, function(err,data) {
+        res.json(data);
+      });
+    })
+  } else {
+    res.redirect(settings.app.nginxlocation);
+  }
 });
 
 app.get('/admin/users', function(req, res) {
@@ -228,12 +267,13 @@ app.get('/admin/users', function(req, res) {
       res.render('users',{
         user:req.user,
         users: result,
+        opts: settings.app,
         error:req.flash("errorMessage"),
         success:req.flash("successMessage")
       });
     });
   } else {
-    res.redirect('/');
+    res.redirect(settings.app.nginxlocation);
   }
 });
 

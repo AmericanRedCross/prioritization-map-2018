@@ -1,0 +1,100 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+  integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+  crossorigin=""/>
+<link rel="stylesheet" href="{{opts.nginxlocation}}css/dc.css"/>
+<link rel="stylesheet" href="{{opts.nginxlocation}}css/nouislider.min.css"/>
+
+
+<div id="tooltip"></div>
+
+<div class="grid-container fluid">
+
+<div class="grid-x">
+  <div class="cell">
+    <form class="float-right" style="margin-top:6px;" action="{{opts.nginxlocation}}logout" method="POST" >
+      <button type="submit" value="submit" class="button alert tiny hollow">Log Out</button>
+    </form>
+  </div>
+</div>
+
+<div class="grid-x">
+
+  <div class="cell medium-6">
+
+    <h3>Risk</h3>
+
+    <div id="risk-map"></div>
+
+    <div id="inform-group" class="">
+      <!-- <h4>INFORM Index for Risk Management &nbsp;<i id="inform" class="group-toggle fa fa-toggle-on" onclick="toggleGroup(this);"></i></h4>
+      <hr> -->
+      <div class="subcat-group">
+        <h5>Hazard & exposure</h5>
+        <h6 class="subcat">Natural &nbsp; <small><span class="natural weight"></span></small></h6>
+        <div class="sliders inform" id="natural"></div>
+        <h6 class="subcat">Conflict &nbsp; <small><span class="conflict weight"></span></small></h6>
+        <div class="sliders inform" id="conflict"></div>
+        <h5>Vulnerability</h5>
+        <h6 class="subcat">Socio-economic &nbsp; <small><span class="socioecon weight"></span></small></h6>
+        <div class="sliders inform" id="socioecon"></div>
+        <h6 class="subcat">Vulnerable groups &nbsp; <small><span class="vuln weight"></span></small></h6>
+        <div class="sliders inform" id="vuln"></div>
+        <h5>Coping capacity (lack of)</h5>
+        <h6 class="subcat">Institutional &nbsp; <small><span class="institutional weight"></span></small></h6>
+        <div class="sliders inform" id="institutional"></div>
+        <h6 class="subcat">Infrastructure &nbsp; <small><span class="infra weight"></span></small></h6>
+        <div class="sliders inform" id="infra"></div>
+      </div>
+    </div>
+    <div class="pull-right">
+      <small><a class="info-icon" onclick="quickSetSliders('zero')"> zero out all sliders</a> &nbsp; <small>|</small> &nbsp; <a class="info-icon" onclick="quickSetSliders('default')"> default values</a></small>
+    </div>
+    <hr>
+      <div id="graph"></div>
+  </div>
+
+  <div class="cell medium-6">
+    <div class="grid-x">
+      <div class="cell">
+        <h3>Investment</h3>
+      </div>
+      <div class="cell">
+        <div id="world-chart" style="width:100%; height:500px;"></div>
+      </div>
+      <div class="cell">
+        <div id="donor-chart" style="width:100%;"></div>
+      </div>
+      <div class="cell medium-6">
+        <div id="how-chart" style="width:100%;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="{{opts.nginxlocation}}js/nouislider.min.js"></script>
+<script src="{{opts.nginxlocation}}js/what-input.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js"></script>
+
+<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script>
+<script src="{{opts.nginxlocation}}js/leafletsync.js" ></script>
+<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+<script src="{{opts.nginxlocation}}js/d3.min.js"></script>
+<script src="{{opts.nginxlocation}}js/queue.v1.min.js"></script>
+<script src="{{opts.nginxlocation}}js/d3-geo-projection.v1.min.js"></script>
+<script src="{{opts.nginxlocation}}js/topojson.v1.min.js"></script>
+<script src="{{opts.nginxlocation}}js/crossfilter.min.js"></script>
+<script src="{{opts.nginxlocation}}js/dc.min.js"></script>
+<script src="{{opts.nginxlocation}}js/dc.leaflet.js"></script>
+<script>
+  $(document).foundation();
+  var nginxlocation =  "{{opts.nginxlocation}}";
+</script>
+
+<script src="{{opts.nginxlocation}}js/custom.js"></script>

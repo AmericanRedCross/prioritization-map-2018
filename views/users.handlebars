@@ -1,6 +1,6 @@
 
 <div id="modal" class="reveal" data-reveal>
-  <form action="/admin/user" method="POST" data-abide novalidate>
+  <form action="{{opts.nginxlocation}}admin/user" method="POST" data-abide novalidate>
     <h4 id="modal_title">Add user</h4>
     <div data-abide-error class="alert callout" style="display: none;">
       <p><i class="fi-alert"></i> There are some errors in your form.</p>
@@ -83,7 +83,7 @@
           <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
           <div class="button-group small float-right">
             <a class="button secondary hollow" onClick="editUser(this);" data-id="{{id}}" data-user="{{user}}" data-permissions="{{permissions}}"><i class="fa fa-fw fa-pencil"></i></a>
-            <form action="/admin/user" method="POST" style="display:inline-block;">
+            <form action="{{opts.nginxlocation}}admin/user" method="POST" style="display:inline-block;">
               <input type="hidden" name="_method" value="DELETE" />
               <input type="hidden" name="id" value="{{id}}" />
               <button type="submit" value="submit" class="button alert hollow"><i class="fa fa-fw fa-trash"></i></a>
@@ -98,6 +98,12 @@
 </div>
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="{{opts.nginxlocation}}js/what-input.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js"></script>
+<script>
+  $(document).foundation()
+</script>
 
 <script>
 

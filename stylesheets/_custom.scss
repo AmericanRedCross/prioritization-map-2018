@@ -31,3 +31,84 @@
 .custom-navigation_spacer {
   height: 42px;
 }
+
+.info-icon {
+  color: #777;
+  cursor:pointer;
+  text-decoration: none;
+  cursor: pointer;
+}
+.info-icon:hover {
+  color: #000000;
+}
+#risk-map, #world-chart {
+  border: 1px solid #DCDCDC;
+}
+
+#risk-map { height: 500px; }
+#risk-map svg path {
+  pointer-events: all;
+}
+
+.leaflet-container {
+  // background:rgba(255,0,0,0.0) !important;
+  background-color:rgba(255,0,0,0.0) !important;
+}
+
+.country {
+  // fill: rgba(237, 27, 46, 0.2);
+  // stroke: red;
+  // stroke-width: 1px;
+  stroke: #000;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  cursor: pointer;
+  pointer-events: all;
+  stroke-linecap: round;
+}
+
+
+.subcat {
+  margin-left: 10px;
+}
+.group-toggle {
+  cursor: pointer;
+}
+.sliders {
+  margin:10px;
+  max-width:200px;
+  background:rgb(127, 0, 0);
+}
+.noUi-handle, .sliders {
+  cursor: pointer;
+}
+.graph-segment {
+  cursor: pointer;
+  display: inline-block;
+  height:12px;
+  border-top: 1px solid #EAE8E8;
+  border-bottom: 1px solid #EAE8E8;
+}
+.graph-text-col {
+  text-align: right;
+  padding: 0 6px;
+}
+.graph-bar-col  {
+  padding: 0;
+}
+
+.sliders.null-slider { background: #e4e4e5 !important;}
+
+#tooltip {
+    position:absolute;
+    z-index:999;
+    font-size:14px;
+    color: #1a1a1a;
+    background-color: rgba(245,245,245,1);
+    border-radius: 3px;
+    padding: 4px 6px;
+    max-width: 300px;
+}
+#tooltip:empty {
+    display:none;
+}

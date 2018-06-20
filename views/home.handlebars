@@ -3,14 +3,17 @@
 {{#if user}}
   <h5>Welcome <b>{{user.user}}</b>.</h5>
   <p>You are logged in.</p>
+  <p>The dashboard is intended to...</p>
+  <p>The data is from...</p>
   <p>
-    <form class="navbar-form" action="/logout" method="POST" >
-      <button type="submit" value="submit" class="button">Log Out</button>
+    <form class="navbar-form" action="{{opts.nginxlocation}}logout" method="POST" >
+      <a href="{{opts.nginxlocation}}map" class="button">View dashboard</a>
+      <button type="submit" value="submit" class="button alert">Log Out</button>
     </form>
   </p>
 {{else}}
 
-  	<form action="/login" method="POST">
+  	<form action="{{opts.nginxlocation}}login" method="POST">
       <label> User
         <input type="text" name="user" id="login-user" placeholder="...">
       </label>
@@ -24,3 +27,10 @@
 {{/if}}
 </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="{{opts.nginxlocation}}js/what-input.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js"></script>
+<script>
+  $(document).foundation()
+</script>
