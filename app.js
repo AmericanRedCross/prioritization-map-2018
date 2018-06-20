@@ -118,15 +118,15 @@ var editUser = flow.define(
           //...
           console.log(err);
           req.flash('errorMessage', " something went wrong");
-          res.redirect('/admin/users');
+          res.redirect(settings.app.nginxlocation + '/admin/users');
         } else {
           req.flash('successMessage', " user updated");
-          res.redirect('/admin/users');
+          res.redirect(settings.app.nginxlocation + '/admin/users');
         }
       });
     } else {
       req.flash('errorMessage', " something went wrong");
-      res.redirect('/admin/users');
+      res.redirect(settings.app.nginxlocation + '/admin/users');
     }
   }
 );
