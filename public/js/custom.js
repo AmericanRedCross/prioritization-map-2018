@@ -1,5 +1,11 @@
+// data+code oddities...
+// >> click Mali and American Red Cross
+// >> duplicate competencies?
+// TODO:
+// >> highlight country(ies) in inform list that are being filtered
+
 // global variables
-var world, inform, countryMapping;
+var world, inform, countryMapping, competencies, competencySlider;
 var groupToggles = document.getElementsByClassName('group-toggle');
 var rows;
 
@@ -105,6 +111,7 @@ function getData(err, data1, data2, data3, data4){
   world = topojson.feature(data1, data1.objects.ne_50m);
   inform = [];
   countryMapping = data3;
+  competencies = data4;
 
   data2.forEach(function(d){
     var rowObject = {
@@ -135,10 +142,38 @@ function getData(err, data1, data2, data3, data4){
     d.euro = getNumber(d.euro);
   })
 
-  setupSliders();
+  setupCompetencySliders();
 }
 
-function setupSliders(){
+
+function setupCompetencySliders(){
+  competencySlider = document.getElementById('competency-slider');
+  noUiSlider.create(document.getElementById('competency-slider'), {
+    start: 3,
+    connect: "lower",
+    step: 1,
+    tooltip: true,
+    orientation: "horizontal",
+    range: { 'min':1, 'max':5 },
+    format: {
+  	  to: function ( value ) {
+  		return d3.format("")(value);
+  	  },
+  	  from: function ( value ) {
+  		return d3.format("")(value);
+  	  }
+  	}
+  });
+  competencySlider.noUiSlider.on('update', function( values, handle ) {
+  	document.getElementById('competency-filter').innerHTML = values[handle];
+  });
+  var showLevel = document.getElementById('competency-filter')
+  competencySlider.noUiSlider.on('slide', renderCompetencies);
+
+  setupInformSliders();
+}
+
+function setupInformSliders(){
   // only the subcategories have elements on the page classed sliders
   sliders = document.getElementsByClassName('sliders');
   for ( var i = 0; i < sliders.length; i++ ) {
@@ -178,9 +213,49 @@ function drawRisksMap(){
   drawInvestments();
 }
 
+function renderCompetencies(){
+
+  var levelFilter = parseInt(competencySlider.noUiSlider.get());
+
+  filteredDonors = d3.nest().key(function(d){ return d["donor-iso"];}).map(cf.allFiltered());
+  filteredCompetencies = competencies.filter(function(d){ return filteredDonors[d["donor-iso"]] && parseInt(d.expertise) >= levelFilter; });
+  competencyNest = d3.nest().key(function(d){ return d.competency; }).entries(filteredCompetencies);
+
+  // JOIN new data with old elements.
+  competencyRows = d3.select('#competency-chart').selectAll('div')
+    .data(competencyNest, function(d){ return d.key; });
+
+  // EXIT old elements not present in new data.
+  competencyRows.exit()
+
+  // UPDATE old elements present in new data.
+  competencyRows.html(function(d){
+    return "<span>" + d.key + " &nbsp; [" + d.values.length + "]</span>";
+  })
+
+  // ENTER new elements present in new data.
+  competencyRows.enter().append("div").html(function(d){
+    return "<span>" + d.key + " &nbsp; [" + d.values.length + "]</span>";
+  })
+
+  competencyRows.sort(function(a,b){
+    // sort from most frequent competency among donors
+    if (a.values.length < b.values.length) return 1;
+    if (a.values.length > b.values.length) return -1;
+    // then if equal sort comptencies alphabetically
+    if (a.key < b.key) return -1;
+    if (a.key > b.key) return 1;
+  })
+
+}
+
 function drawInvestments(){
 
   cf = crossfilter(countryMapping);
+  cf.onChange(function(){
+      renderCompetencies();
+  });
+
   countriesDimension = cf.dimension(function(d){
     return d["country-iso"];
   });
@@ -249,7 +324,7 @@ function drawInvestments(){
 
     howChart
       .width(null)
-      .height(480)
+      .height(null)
       .renderLabel(false)
       .colors(d3.scale.ordinal().range(["#66c2a5","#fc8d62","#8da0cb","#e78ac3"]))
       .colorDomain(distinct)
@@ -262,6 +337,7 @@ function drawInvestments(){
       .legend(dc.legend());
 
     dc.renderAll();
+    renderCompetencies();
 
 
 
@@ -276,7 +352,7 @@ function drawInvestments(){
 
 function buildTable(){
 
-    rows = d3.select('#graph').selectAll('div')
+    rows = d3.select('#inform-chart').selectAll('div')
       .data(inform, function(d){ return d.iso; }).enter()
       .append('div')
       .attr('id', function(d){ return "row-" + d.iso; })
@@ -456,6 +532,11 @@ function redraw() {
   var donorChartWidth = document.getElementById('donor-chart').offsetWidth - 20;
   donorChart.width(donorChartWidth);
   donorChart.redraw();
+}
+
+function resetDc() {
+  dc.filterAll();
+  dc.redrawAll();
 }
 
 d3.select(window).on("resize", throttle);
