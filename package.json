@@ -9,6 +9,7 @@
   "author": "Dan Joseph (danbjoseph)",
   "license": "GPL-3.0",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.1.0",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "connect-sqlite3": "^0.9.11",
@@ -20,7 +21,6 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "flow": "^0.2.3",
-    "font-awesome": "^4.7.0",
     "foundation-sites": "^6.4.3",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",

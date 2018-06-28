@@ -1,11 +1,9 @@
 // data+code oddities...
 // >> click Mali and American Red Cross
 // >> duplicate competencies?
-// TODO:
-// >> highlight country(ies) in inform list that are being filtered
 
 // global variables
-var world, inform, countryMapping, competencies, competencySlider;
+var world, inform, countryMapping, competencies, competencySlider, nsLookup;
 var groupToggles = document.getElementsByClassName('group-toggle');
 var rows;
 
@@ -112,6 +110,9 @@ function getData(err, data1, data2, data3, data4){
   inform = [];
   countryMapping = data3;
   competencies = data4;
+  nsLookup = d3.nest()
+    .key(function(d) { return d['donor-iso']; })
+    .map(countryMapping);
 
   data2.forEach(function(d){
     var rowObject = {
@@ -215,28 +216,55 @@ function drawRisksMap(){
 
 function renderCompetencies(){
 
+  filteredCountries = d3.nest().key(function(d){ return d["country-iso"];}).map(cf.allFiltered());
+  rows.each(function(d){
+    if(filteredCountries[d.iso] === undefined){
+      d3.select(this).classed("highlight-country-name", false)
+    } else {
+      d3.select(this).classed("highlight-country-name", true)
+    }
+  })
+
   var levelFilter = parseInt(competencySlider.noUiSlider.get());
 
   filteredDonors = d3.nest().key(function(d){ return d["donor-iso"];}).map(cf.allFiltered());
   filteredCompetencies = competencies.filter(function(d){ return filteredDonors[d["donor-iso"]] && parseInt(d.expertise) >= levelFilter; });
   competencyNest = d3.nest().key(function(d){ return d.competency; }).entries(filteredCompetencies);
 
+
+
   // JOIN new data with old elements.
   competencyRows = d3.select('#competency-chart').selectAll('div')
-    .data(competencyNest, function(d){ return d.key; });
+    .data(competencyNest, function(d){ return d.key; })
+    .classed('competency-row', true);
 
   // EXIT old elements not present in new data.
-  competencyRows.exit()
+  competencyRows.exit().remove();
 
   // UPDATE old elements present in new data.
   competencyRows.html(function(d){
-    return "<span>" + d.key + " &nbsp; [" + d.values.length + "]</span>";
+    return "<span class='competency-info'><i class='fas fa-info-circle'></i>" +  " <small>[" + d.values.length + "] </small></span>" + d.key ;
   })
 
   // ENTER new elements present in new data.
   competencyRows.enter().append("div").html(function(d){
-    return "<span>" + d.key + " &nbsp; [" + d.values.length + "]</span>";
+    return "<span class='competency-info'><i class='fas fa-info-circle'></i>" +  " <small>[" + d.values.length + "] </small></span>" + d.key ;
   })
+
+  competencyRows.on("mouseover", function(d){
+        var tooltipText = "<strong>Donor NS and self-rating</strong><br><small>";
+        var donorArray = [];
+        d.values.forEach(function(d){
+          var donorIso = d['donor-iso'];
+          var donorName = nsLookup[donorIso][0]['donor-ns'];
+          donorArray.push(donorName + ' (' + d.expertise + ')');
+        });
+        tooltipText += donorArray.join(', ') + '</small>';
+        $('#tooltip-competency').append(tooltipText);
+      })
+      .on("mouseout", function(d){
+        $('#tooltip-competency').empty();
+      });
 
   competencyRows.sort(function(a,b){
     // sort from most frequent competency among donors
@@ -246,6 +274,14 @@ function renderCompetencies(){
     if (a.key < b.key) return -1;
     if (a.key > b.key) return 1;
   })
+
+  d3.selectAll('.competency-info')
+    .on("mouseover", function(d){
+      $('#tooltip-competency').show();
+    })
+    .on("mouseout", function(d){
+      $('#tooltip-competency').hide();
+    });
 
 }
 
@@ -337,7 +373,7 @@ function drawInvestments(){
       .legend(dc.legend());
 
     dc.renderAll();
-    renderCompetencies();
+
 
 
 
@@ -365,10 +401,10 @@ function buildTable(){
           '" style="background-color:' + defaults[graphSegments[i]].color + '; width:0%;" data-label="' + defaults[graphSegments[i]].title + '" data-score=""></div>';
           graphSegmentsHtml += thisSegmentHtml;
         }
-        html = '<div class="cell small-4 graph-text-col">' + d.name + ' ';
+        html = '<div class="cell small-4 graph-text-col"><span class="text-span">' + d.name + ' ';
 
         html += (d.missing.length > 0) ? '<i class="fa fa-info fa-fw data-missing-icon" data-missing="' + d.missing.join(", ") + '"></i>' : '';
-        html += ' - <span class="score-text"></span></div>' +
+        html += ' - <span class="score-text"></span></span></div>' +
         '<div class="cell small-8 graph-bar-col">' + graphSegmentsHtml  + "</div></div>";
         return html;
       })
@@ -387,7 +423,7 @@ function buildTable(){
         $('#tooltip').empty();
       });
 
-
+  renderCompetencies();
   setWeighting();
 }
 
@@ -564,9 +600,13 @@ $(document).ready(function() {
         //Set the X and Y axis of the tooltip
         $('#tooltip').css('top', e.pageY + 10 );
         $('#tooltip').css('left', e.pageX + 20 );
+        $('#tooltip-competency').css('top', e.pageY + 10 );
+        $('#tooltip-competency').css('left', e.pageX + 20 );
     }).mousemove(function(e) {
         //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
         $("#tooltip").css({top:(e.pageY+15)+"px",left:(e.pageX+20)+"px"});
+        $("#tooltip-competency").css({top:(e.pageY+15)+"px",left:(e.pageX+20)+"px"});
+
     });
 });
 

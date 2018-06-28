@@ -14,6 +14,19 @@
   }
 }
 
+.highlight-country-name {
+  font-weight: 800;
+}
+.highlight-country-name .graph-text-col .text-span {
+  background-color: #ffff64;
+}
+
+.leaflet-control.investment-info{
+  padding: 4px;
+  background-color: white;
+  border: 1px solid #EAE8E8;
+}
+
 .custom-navigation__top-bar {
   padding: 0;
 }
@@ -32,13 +45,13 @@
   height: 42px;
 }
 
-.info-icon {
+.info-icon, .competency-info {
   color: #777;
   cursor:pointer;
   text-decoration: none;
   cursor: pointer;
 }
-.info-icon:hover {
+.info-icon:hover, .competency-info:hover {
   color: #000000;
 }
 #risk-map, #world-chart {
@@ -133,5 +146,18 @@
     max-width: 300px;
 }
 #tooltip:empty {
+    display:none;
+}
+#tooltip-competency {
+    position:absolute;
+    z-index:999;
+    font-size:14px;
+    color: #1a1a1a;
+    background-color: rgba(245,245,245,1);
+    border-radius: 3px;
+    padding: 4px 6px;
+    max-width: 500px;
+}
+#tooltip-competency:empty {
     display:none;
 }

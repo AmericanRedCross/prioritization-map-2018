@@ -1,8 +1,8 @@
 node_modules
 site.db
 sessions
-public/fonts/*
-!public/fonts/README.md
+public/webfonts/*
+!public/webfonts/README.md
 public/css/gulp.css
 data/*
 !data/README.md

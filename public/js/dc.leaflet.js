@@ -661,7 +661,7 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
         _info = L.control();
 
         _info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'hdx-3w-info');
+            this._div = L.DomUtil.create('div', 'investment-info');
             this.update();
                 return this._div;
             };
@@ -743,7 +743,8 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
                 layer.on("mouseover",function(){
                     if(v!==undefined){
-                        var info = _chart.popup()(feature) +": " +v.d.value;
+                        var value = v.d.value.toLocaleString('en', {currency : 'EUR'})
+                        var info = _chart.popup()(feature) +": &#8364;" + value;
                     } else {
                         var info = _chart.popup()(feature);
                     }

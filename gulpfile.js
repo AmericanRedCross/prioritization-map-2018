@@ -4,7 +4,7 @@ var sass = require('gulp-sass');
 
 var sassInput = './stylesheets/*.scss';
 var sassOptions = {
-  includePaths: ['./node_modules/foundation-sites/scss','./node_modules/font-awesome/scss' ],
+  includePaths: ['./node_modules/foundation-sites/scss','./node_modules/@fortawesome/fontawesome-free/scss' ],
   errLogToConsole: true,
   outputStyle: 'expanded'
 };
@@ -20,8 +20,8 @@ gulp.task('sass', function() {
 });
 
 gulp.task('icons', function() {
-  return gulp.src('./node_modules/font-awesome/fonts/**.*')
-    .pipe(gulp.dest('./public/fonts'));
+  return gulp.src('./node_modules/@fortawesome/fontawesome-free/webfonts/**.*')
+    .pipe(gulp.dest('./public/webfonts'));
 });
 
 gulp.task('watch', function() {
