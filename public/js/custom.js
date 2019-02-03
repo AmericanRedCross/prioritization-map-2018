@@ -93,7 +93,7 @@ function quickSetSliders(option){
 /* GRAB DATA SOURCES */
 queue()
   .defer(d3.json, nginxlocation + "data/ne_50m-simple-topo.json")
-  .defer(d3.csv, nginxlocation + "data/INFORM_Mid2018_v034.csv")
+  .defer(d3.csv, nginxlocation + "data/INFORM_2019_v036.csv")
   .defer(d3.json, nginxlocation + "map/country-mapping")
   .defer(d3.json, nginxlocation + "map/competencies")
   .await(getData);
@@ -301,19 +301,26 @@ function drawInvestments(){
   howDimension = cf.dimension(function(d){
     return d["how"];
   });
+  euroDimension = cf.dimension(function(d){ 
+    return Math.round(d["euro"]); 
+  });
 
   countryEuroGroup = countriesDimension.group().reduceSum(function(d){
-    return d["euro"];
+    return Math.round(d["euro"]);
   });
   donorEurosGroup = donorDimension.group().reduceSum(function(d){
-    return d["euro"];
+    return Math.round(d["euro"]);
   });
   howGroup = howDimension.group();
+  euroGroup = euroDimension.groupAll().reduceSum(function(d){
+    return Math.round(d["euro"]);
+  });
+  
 
   var donorChartWidth = document.getElementById('donor-chart').offsetWidth - 20;
   donorChart
     .width(donorChartWidth)
-    .height(500)
+    .height(400)
     .dimension(donorDimension)
     .group(donorEurosGroup)
     .elasticX(true)
@@ -323,6 +330,7 @@ function drawInvestments(){
     .colorAccessor(function(d, i){return 1;})
     .ordering(function(d){ return -d.value })
     .xAxis().ticks(4)
+    
 
   worldChart
     .width(null)
@@ -349,6 +357,9 @@ function drawInvestments(){
     .title(function(d){
       return d.properties.name;
     })
+    .on('renderlet', function () {
+      d3.select("#euroTotal").text(noDecimal(euroGroup.value()));
+    });
 
     var distinct = []
     for (var i = 0; i < countryMapping.length; i++){
@@ -362,9 +373,9 @@ function drawInvestments(){
       .width(null)
       .height(null)
       .renderLabel(false)
-      .colors(d3.scale.ordinal().range(["#66c2a5","#fc8d62","#8da0cb","#e78ac3"]))
+      .colors(d3.scale.ordinal().range(["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"]))  
       .colorDomain(distinct)
-      .slicesCap(4)
+      .slicesCap(5)
       .externalLabels(50)
       .externalRadiusPadding(50)
       .drawPaths(true)
