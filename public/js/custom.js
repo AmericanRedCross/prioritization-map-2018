@@ -342,7 +342,8 @@ function drawInvestments(){
     .colors(function(d){
       var colorScale = d3.scale.quantize()
           .range(["#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"])
-          .domain([0, d3.max(countryMapping, function(d){ return d.euro; })])
+          // .domain([0, d3.max(countryMapping, function(d){ return d.euro; })])
+          .domain([0, countryEuroGroup.top(1)[0].value])
       if(d == 0){
         return "#ccc"
       }else{
