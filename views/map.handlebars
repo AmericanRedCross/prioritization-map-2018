@@ -18,7 +18,7 @@
     </form>
   </div>
   <div class="cell">
-  <p><small>The 2019 INFORM Risk Index is visualized on the left map. The darker the color, the higher the estimated risk. The weighting of the different risk categories can be adjusted using the sliders below the map. The right map shows available budget data by country, donor National Society, and method of engagement. The right side data can be filtered by clicking on the map, a National Society's budget bar in the chart, or a method slice in the pie graph. Countries receiving funds, after any data filters are applied, are highlighted yellow in the INFORM ranked list on the lower left side.</small></p>
+  <p><small>The 2019 INFORM Risk Index is visualized on the left map. The darker the color, the higher the estimated risk. The weighting of the different risk categories can be adjusted using the sliders below the map. The right side shows available budget data by country, donor National Society, and method of engagement. The right side data can be filtered by clicking on the map, a National Society's budget bar in the chart, or a method slice in the pie graph. The map can be toggled to show either budgeted invested amount, or number of investing partner national societies using the buttons directly below the map. Countries receiving funds, after any data filters are applied, are highlighted yellow in the INFORM ranked list on the lower left side.</small></p>
   </div>
 </div>
 
@@ -89,8 +89,21 @@
       </div>
     </div>
     <div class="grid-x grid-padding-x">
-      <div class="cell text-right">
-        <small><a class="info-icon" onclick="resetDc()"> reset filters</a></small>
+      <div class="cell">
+        
+        <div style="float:left;">
+          <small>
+            <span class="color-toggle-wrapper "></i> Euro <i class="fas fa-euro-sign"></i> &nbsp;<i id="euro" class="color-toggle fa fa-toggle-on" onclick="toggleColor(this);"></i></span>
+            &nbsp; | &nbsp;
+            <span class="color-toggle-wrapper inactive-region"> PNS # &nbsp;<i id="pns" class="color-toggle fa fa-toggle-off" onclick="toggleColor(this);"></i></span>
+            <!-- &nbsp; | &nbsp;
+            <span class="scale-toggle-wrapper inactive-region">Africa &nbsp;<i id="africa" class="scale-toggle fa fa-toggle-off" onclick="toggleMap(this);"></i></span>
+            &nbsp; | &nbsp;
+            <span class="scale-toggle-wrapper inactive-region">AMEE &nbsp;<i id="amee" class="scale-toggle fa fa-toggle-off" onclick="toggleMap(this);"></i></span> -->
+          </small>
+        </div>
+        
+        <div style="float:right;"><small><a class="info-icon" onclick="resetDc()"> reset filters</a></small></div>
       </div>
       <div class="cell">
         <h5 class="subcat-group__heading">

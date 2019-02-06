@@ -743,8 +743,10 @@ dc.leafletChoroplethChart = function (parent, chartGroup) {
         var v = _dataMap[_chart.featureKeyAccessor()(feature)];
                 layer.on("mouseover",function(){
                     if(v!==undefined){
-                        var value = v.d.value.toLocaleString('en', {currency : 'EUR'})
-                        var info = _chart.popup()(feature) +": &#8364;" + value;
+                        // var value = v.d.value.toLocaleString('en', {currency : 'EUR'})
+                        // var info = _chart.popup()(feature) +": &#8364;" + value;
+                        var value = parseInt(v.d.value, 10).toLocaleString('en');
+                        var info = _chart.popup()(feature) +": " + value;                        
                     } else {
                         var info = _chart.popup()(feature);
                     }

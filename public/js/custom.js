@@ -22,8 +22,12 @@ var worldChart = dc.leafletChoroplethChart("#world-chart");
 var donorChart = dc.rowChart('#donor-chart');
 var howChart = dc.pieChart('#how-chart');
 
-var quantize = d3.scale.quantize()
+var informQuantize = d3.scale.quantize()
     .range(["#fcfbfd","#efedf5","#dadaeb","#bcbddc","#9e9ac8","#807dba","#6a51a3","#54278f","#3f007d"]);
+  
+var colorScale = d3.scale.quantize()
+  .range(["#777","#777"])
+  .domain([0, 1])
 
 // initialize the Leaflet risk map
 var riskMap = L.map('risk-map').setView([0, 0], 2);
@@ -308,6 +312,7 @@ function drawInvestments(){
   countryEuroGroup = countriesDimension.group().reduceSum(function(d){
     return Math.round(d["euro"]);
   });
+  countryPnsGroup = countriesDimension.group().reduceCount()
   donorEurosGroup = donorDimension.group().reduceSum(function(d){
     return Math.round(d["euro"]);
   });
@@ -340,13 +345,17 @@ function drawInvestments(){
     .dimension(countriesDimension)
     .group(countryEuroGroup)
     .colors(function(d){
-      var colorScale = d3.scale.quantize()
-          .range(["#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"])
-          // .domain([0, d3.max(countryMapping, function(d){ return d.euro; })])
-          .domain([0, countryEuroGroup.top(1)[0].value])
+      
+      console.log(d)
+
+      // var colorScale = d3.scale.quantize()
+      //     .range(["#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"])
+      //     // .domain([0, d3.max(countryMapping, function(d){ return d.euro; })])
+      //     .domain([0, countryEuroGroup.top(1)[0].value])
       if(d == 0){
         return "#ccc"
       }else{
+        console.log(colorScale(d))
         return colorScale(d);
       }
     })
@@ -385,6 +394,7 @@ function drawInvestments(){
       .legend(dc.legend());
 
     dc.renderAll();
+    setColor();
 
 
 
@@ -523,13 +533,13 @@ function updateTable(){
 
 function updateMapColors(){
 
-  quantize.domain([
+  informQuantize.domain([
       // d3.min(d3.values(countryData), function(d) { return d.score; }),
       // d3.max(d3.values(countryData), function(d) { return d.score; })
       d3.min(rankingArrays[regionFilter]),
       d3.max(rankingArrays[regionFilter])
     ]);
-  if(quantize.domain()[0] === 0 && quantize.domain()[1] === 0) {quantize.domain([0,1])}
+  if(informQuantize.domain()[0] === 0 && informQuantize.domain()[1] === 0) {informQuantize.domain([0,1])}
   mappedGeo.selectAll('.country').each(function(d,i){
     if(scoreLookup[d.properties.iso] || scoreLookup[d.properties.iso] === 0){
       // index starts at 0, ranking starts at 1, so add 1
@@ -543,7 +553,7 @@ function updateMapColors(){
         .attr('data-region-rank', regionRank)
         .style("fill", function(d){
           if(regionFilter === "world" || d.properties.region === regionFilter){
-            return quantize(scoreLookup[d.properties.iso]);
+            return informQuantize(scoreLookup[d.properties.iso]);
           } else { return defaultFill }
         })
     } else {
@@ -604,6 +614,38 @@ function toggleGroup(el){
   } else { toggle.classed({'fa-toggle-on':true, 'fa-toggle-off':false}); }
 
   setWeighting();
+}
+
+// toggle region on or off
+function toggleColor(el){
+  d3.selectAll(".color-toggle-wrapper").classed("inactive-color",true);
+  d3.selectAll(".color-toggle").classed({'fa-toggle-on':false, 'fa-toggle-off':true});
+  d3.select(el.parentNode).classed("inactive-color",false);
+  d3.select(el).classed({'fa-toggle-on':true, 'fa-toggle-off':false});
+  setColor();
+}
+
+function setColor(){
+  var colorFilter = $(".color-toggle.fa-toggle-on").attr("id");
+  if(colorFilter == "euro"){
+    console.log("euro")
+    worldChart.group(countryEuroGroup);
+    colorScale = d3.scale.threshold()
+      .range(["#d4b9da","#df65b0","#ce1256","#980043","#67001f"])
+      .domain([1000000, 5000000, 10000000, 25000000])
+     
+  }
+  if(colorFilter == "pns"){
+    console.log("pns")
+    worldChart.group(countryPnsGroup);
+    colorScale = d3.scale.threshold()
+      // .range(["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"])
+      .range(["#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"])
+      
+      .domain([1, 2, 3, 4, 5, 6, 7])
+  } 
+  
+  dc.redrawAll();
 }
 
 // tooltip follows cursor
