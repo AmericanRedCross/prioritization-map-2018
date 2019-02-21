@@ -325,7 +325,7 @@ function drawInvestments(){
   var donorChartWidth = document.getElementById('donor-chart').offsetWidth - 20;
   donorChart
     .width(donorChartWidth)
-    .height(400)
+    .height(450)
     .dimension(donorDimension)
     .group(donorEurosGroup)
     .elasticX(true)
