@@ -11,8 +11,8 @@ express, handlebars, sqlite, passport, foundation
 ### Development
 
 - install [nvm](https://github.com/creationix/nvm)
-- run `nvm install 8.11.2 ` and `nvm use`
+- run `nvm install 12.18.4` and `nvm use`
 - `npm install`
-- `npm install -g gulp-cli`
+- `npm install -g gulp`
 - `gulp dev`
 - in a new terminal window run `node app.js`

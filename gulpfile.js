@@ -1,32 +1,37 @@
-var gulp = require('gulp');
-var autoprefixer = require('gulp-autoprefixer');
-var sass = require('gulp-sass');
+const gulp = require('gulp');
+const autoprefixer = require('gulp-autoprefixer');
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const plumber = require('gulp-plumber');
 
-var sassInput = './stylesheets/*.scss';
-var sassOptions = {
-  includePaths: ['./node_modules/foundation-sites/scss','./node_modules/@fortawesome/fontawesome-free/scss' ],
+const sassInput = './stylesheets/*.scss';
+const sassOptions = {
+  includePaths: ['node_modules/foundation-sites/scss','node_modules/@fortawesome/fontawesome-free/scss'],
   errLogToConsole: true,
   outputStyle: 'expanded'
-};
-var autoprefixerOptions = {
-  browsers: ['last 2 versions', 'ie >= 9', 'Android >= 2.3', 'ios >= 7']
-};
+}
 
-gulp.task('sass', function() {
+function styles() { 
   return gulp.src(sassInput)
+    .pipe(plumber())
+    .pipe(sourcemaps.init())
     .pipe(sass(sassOptions).on('error', sass.logError))
-    .pipe(autoprefixer(autoprefixerOptions))
+    .pipe(autoprefixer())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./public/css'));
-});
+};
+exports.styles = styles;
 
-gulp.task('icons', function() {
-  return gulp.src('./node_modules/@fortawesome/fontawesome-free/webfonts/**.*')
+function fonts() {
+  return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/**.*')
     .pipe(gulp.dest('./public/webfonts'));
-});
+}
+exports.fonts = fonts;
 
-gulp.task('watch', function() {
-  gulp.watch(sassInput, ['sass']);
-});
+function watching() {
+  gulp.watch(sassInput, sass);
+}
+exports.watching = watching;
 
-gulp.task('dev', ['sass', 'icons', 'watch']);
-gulp.task('default', ['sass', 'icons']);
+exports.dev = gulp.series(gulp.parallel(styles,fonts), watching);
+exports.default = gulp.parallel(styles, fonts);
